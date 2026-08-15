@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
+import { HashRouter, Navigate, Routes, Route } from 'react-router-dom'
 import BaseLayout from './components/layout/BaseLayout'
 import Home from './pages/Home/Home'
 import NotFound from './pages/NotFound'
@@ -21,7 +21,7 @@ const SECTION_ROUTES = [
 
 function App() {
   return (
-    <BrowserRouter>
+    </HashRouter>
       <Routes>
         <Route path="/" element={<BaseLayout />}>
           <Route index element={<Home />} />
@@ -35,7 +35,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    <HashRouter>
   )
 }
 
