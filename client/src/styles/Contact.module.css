@@ -1,0 +1,211 @@
+.section { padding: var(--section-padding); }
+
+.bg {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg-secondary);
+  z-index: -1;
+}
+
+.head {
+  margin-bottom: 60px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.head.revealed { opacity: 1; transform: translateY(0); }
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  max-width: 480px;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.left.revealed { opacity: 1; transform: translateX(0); }
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.infoIcon {
+  width: 42px;
+  height: 42px;
+  background: var(--color-bg-card);
+  border: var(--border-card);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-primary);
+  flex-shrink: 0;
+}
+
+.infoLabel {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  margin-bottom: 3px;
+}
+
+.infoValue {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+a.infoValue:hover { color: var(--color-accent-primary); }
+
+.mapWrap {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: var(--border-card);
+  box-shadow: var(--shadow-card);
+}
+
+.mapWrap iframe { display: block; }
+
+.formWrap {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+}
+
+.formWrap.revealed { opacity: 1; transform: translateX(0); }
+
+.form {
+  background: var(--color-bg-card);
+  border: var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-secondary);
+}
+
+.input,
+.textarea {
+  background: var(--color-bg-secondary);
+  border: var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast),
+              background var(--transition-fast);
+  -webkit-appearance: none;
+}
+
+.input option { background: var(--color-bg-card); color: var(--color-text-primary); }
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--color-accent-primary);
+  background: var(--color-bg-card);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.input::placeholder,
+.textarea::placeholder { color: var(--color-text-muted); }
+
+.textarea {
+  resize: vertical;
+  min-height: 130px;
+}
+
+.errorMsg {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #dc2626;
+  padding: 10px 14px;
+  background: rgba(220,38,38,0.06);
+  border: 1px solid rgba(220,38,38,0.2);
+  border-radius: var(--radius-sm);
+}
+
+.submitBtn {
+  align-self: flex-start;
+  min-width: 160px;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: rotateSlow 0.7s linear infinite;
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; gap: 40px; }
+  .row { grid-template-columns: 1fr; }
+}

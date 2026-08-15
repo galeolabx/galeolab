@@ -1,0 +1,11 @@
+.page { min-height: 80vh; display: flex; align-items: center; padding-top: 100px; }
+.inner { padding-top: 60px; padding-bottom: 60px; }
+.desc {
+  font-size: 1.05rem;
+  color: var(--color-text-secondary);
+  max-width: 480px;
+  line-height: 1.75;
+  margin-top: 8px;
+}
+.desc a { color: var(--color-accent-primary); }
+.desc a:hover { text-decoration: underline; }
