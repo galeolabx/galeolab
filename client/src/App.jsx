@@ -21,21 +21,23 @@ const SECTION_ROUTES = [
 
 function App() {
   return (
-    </HashRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<BaseLayout />}>
           <Route index element={<Home />} />
-          {SECTION_ROUTES.map(route => (
+
+          {SECTION_ROUTES.map((route) => (
             <Route
               key={route.path}
               path={route.path}
               element={<Navigate to={`/#${route.section}`} replace />}
             />
           ))}
+
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    <HashRouter>
+    </HashRouter>
   )
 }
 
