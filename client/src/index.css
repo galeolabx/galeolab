@@ -1,58 +1,15 @@
 :root {
-  --color-bg-primary: #F7FAFC;
-  --color-bg-secondary: #071A3A;
+  --color-bg-primary: #F6F9FC;
+  --color-bg-secondary: #EAF1F7;
   --color-bg-card: #FFFFFF;
 
-  --color-accent-primary: #1238C7;
-  --color-accent-secondary: #13A8D8;
-  --color-accent-bright: #296CFF;
-  --color-accent-teal: #00C9AE;
+  --color-accent-primary: #2563EB;
+  --color-accent-secondary: #00B8D9;
+  --color-accent-bright: #60A5FA;
 
-  --color-text-primary: #071A3A;
-  --color-text-secondary: #1238C7;
-  --color-text-muted: #5F718A;
-  --color-text-light: #F7FAFC;
+  --color-text-primary: #0B1F3A;
+  --color-text-secondary: #3D5A80;
+  --color-text-muted: #6B8CAE;
 
-  --color-border: #D5DEEA;
-
-  --color-footer-bg: #07101F;
-
-  --color-navbar-bg: rgba(247, 250, 252, 0.8);
-  --color-navbar-bg-scrolled: rgba(247, 250, 252, 0.96);
-  --color-navbar-border: #D5DEEA;
-  --color-mobile-menu-bg: rgba(247, 250, 252, 0.98);
-
-  --gradient-hero: linear-gradient(
-    135deg,
-    #F7FAFC 0%,
-    #EAF2FF 100%
-  );
-
-  --gradient-blue: linear-gradient(
-    135deg,
-    #1238C7,
-    #296CFF
-  );
-
-  --gradient-card: linear-gradient(
-    145deg,
-    #FFFFFF,
-    #F7FAFC
-  );
-
-  --gradient-glow: radial-gradient(
-    ellipse at center,
-    rgba(41, 108, 255, 0.08) 0%,
-    transparent 70%
-  );
-
-  --border-card: 1px solid #D5DEEA;
-  --border-bright: 1px solid rgba(41, 108, 255, 0.4);
-
-  --shadow-card:
-    0 2px 16px rgba(7, 26, 58, 0.08),
-    0 0 0 1px rgba(213, 222, 234, 0.6);
-
-  --shadow-blue: 0 8px 32px rgba(41, 108, 255, 0.18);
-  --shadow-button: 0 4px 16px rgba(41, 108, 255, 0.3);
+  --color-border: #C7D3E0;
 }
