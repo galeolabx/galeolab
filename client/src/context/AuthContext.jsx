@@ -1,242 +1,68 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { hasSupabaseConfig, supabase } from '../lib/supabase'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
+import { createAuthActions, sessionUser } from '../lib/authActions'
 
 const AuthContext = createContext(null)
-const STORAGE_KEY = 'galeolab-auth-users'
-const SESSION_KEY = 'galeolab-auth-session'
 
-function safeParse(value, fallback) {
-  try {
-    return value ? JSON.parse(value) : fallback
-  } catch {
-    return fallback
-  }
-}
-
-export function AuthProvider({ children }) {
-  const [users, setUsers] = useState(() => safeParse(localStorage.getItem(STORAGE_KEY), []))
-  const [user, setUser] = useState(() => safeParse(localStorage.getItem(SESSION_KEY), null))
+export function AuthProvider({ children, callbackError = '' }) {
+  const [session, setSession] = useState(null)
+  const [loading, setLoading] = useState(Boolean(supabase))
+  const [authError, setAuthError] = useState(callbackError)
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(users))
-  }, [users])
-
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify(user))
-    } else {
-      localStorage.removeItem(SESSION_KEY)
+    // Delete the retired demo database, including any readable passwords.
+    for (const storage of [localStorage, sessionStorage]) {
+      storage.removeItem('galeolab-auth-users')
+      storage.removeItem('galeolab-auth-session')
     }
-  }, [user])
+    if (!supabase) return undefined
 
-  useEffect(() => {
-    if (!hasSupabaseConfig()) return undefined
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session?.user) {
-        setUser(null)
-        return
-      }
-
-      setUser({
-        id: session.user.id,
-        fullName: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-        email: session.user.email,
-      })
-    })
-
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.user) {
-        setUser({
-          id: data.session.user.id,
-          fullName: data.session.user.user_metadata?.full_name || data.session.user.email?.split('@')[0] || 'User',
-          email: data.session.user.email,
-        })
+    let active = true
+    let eventVersion = 0
+    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      eventVersion += 1
+      if (active) {
+        setSession(nextSession)
+        setLoading(false)
       }
     })
-
-    return () => authListener.subscription.unsubscribe()
+    const version = eventVersion
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!active || version !== eventVersion) return
+      setSession(error ? null : data.session)
+      if (error) setAuthError('Your session could not be restored. Please sign in again.')
+      setLoading(false)
+    }).catch(() => {
+      if (!active || version !== eventVersion) return
+      setSession(null)
+      setAuthError('Your session could not be restored. Please sign in again.')
+      setLoading(false)
+    })
+    return () => {
+      active = false
+      data.subscription.unsubscribe()
+    }
   }, [])
 
-  const signup = async ({ fullName, email, password }) => {
-    const normalizedEmail = email.trim().toLowerCase()
-
-    if (hasSupabaseConfig()) {
-      const { data, error } = await supabase.auth.signUp({
-        email: normalizedEmail,
-        password,
-        options: {
-          data: {
-            full_name: fullName.trim(),
-          },
-        },
-      })
-
-      if (error) throw error
-
-      const nextUser = {
-        id: data.user?.id || 'supabase-user',
-        fullName: fullName.trim(),
-        email: normalizedEmail,
-      }
-
-      setUser(nextUser)
-      return nextUser
-    }
-
-    const exists = users.some((entry) => entry.email.toLowerCase() === normalizedEmail)
-
-    if (exists) {
-      throw new Error('An account with this email already exists.')
-    }
-
-    const nextUser = {
-      id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}`,
-      fullName: fullName.trim(),
-      email: normalizedEmail,
-      password,
-    }
-
-    setUsers((prev) => [...prev, nextUser])
-    setUser({ id: nextUser.id, fullName: nextUser.fullName, email: nextUser.email })
-    return nextUser
-  }
-
-  const login = async ({ email, password }) => {
-    const normalizedEmail = email.trim().toLowerCase()
-
-    if (hasSupabaseConfig()) {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: normalizedEmail,
-        password,
-      })
-
-      if (error) throw error
-
-      const sessionUser = {
-        id: data.user.id,
-        fullName: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User',
-        email: data.user.email,
-      }
-
-      setUser(sessionUser)
-      return sessionUser
-    }
-
-    const match = users.find(
-      (entry) => entry.email.toLowerCase() === normalizedEmail && entry.password === password,
-    )
-
-    if (!match) {
-      throw new Error('Invalid email or password.')
-    }
-
-    const sessionUser = {
-      id: match.id,
-      fullName: match.fullName,
-      email: match.email,
-    }
-
-    setUser(sessionUser)
-    return sessionUser
-  }
-
-  const socialLogin = async (provider) => {
-    const normalizedProvider = String(provider || '').toLowerCase()
-
-    if (!['google', 'github'].includes(normalizedProvider)) {
-      throw new Error('Unsupported sign-in provider.')
-    }
-
-    if (hasSupabaseConfig()) {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: normalizedProvider,
-        options: {
-          redirectTo: `${window.location.origin}/#/dashboard`,
-        },
-      })
-
-      if (error) throw error
-
-      if (data?.url) {
-        window.location.href = data.url
-      }
-
-      return {
-        provider: normalizedProvider,
-        redirected: Boolean(data?.url),
-      }
-    }
-
-    const socialUser = {
-      id: `demo-${normalizedProvider}-${Date.now()}`,
-      fullName: normalizedProvider === 'google' ? 'Google User' : 'GitHub User',
-      email: `${normalizedProvider}-demo@galeolab.local`,
-    }
-
-    const existing = users.find((entry) => entry.email.toLowerCase() === socialUser.email.toLowerCase())
-
-    if (!existing) {
-      setUsers((prev) => [...prev, { ...socialUser, password: 'social-login' }])
-    }
-
-    setUser(socialUser)
-    return { provider: normalizedProvider, redirected: false }
-  }
-
-  const resetPassword = async ({ email, password }) => {
-    const normalizedEmail = email.trim().toLowerCase()
-
-    if (hasSupabaseConfig()) {
-      const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
-        redirectTo: `${window.location.origin}/login`,
-      })
-
-      if (error) throw error
-
-      return {
-        sent: true,
-        email: normalizedEmail,
-      }
-    }
-
-    const match = users.find((entry) => entry.email.toLowerCase() === normalizedEmail)
-
-    if (!match) {
-      throw new Error('No account was found with that email address.')
-    }
-
-    const updatedUser = {
-      ...match,
-      password,
-    }
-
-    setUsers((prev) =>
-      prev.map((entry) => (entry.email.toLowerCase() === normalizedEmail ? updatedUser : entry)),
-    )
-
-    return {
-      sent: false,
-      email: normalizedEmail,
-    }
-  }
-
+  const actions = createAuthActions(supabase, window.location.origin)
   const logout = async () => {
-    if (hasSupabaseConfig()) {
-      await supabase.auth.signOut()
-      setUser(null)
-      return
+    try {
+      await actions.logout()
+      setSession(null)
+      setAuthError('')
+    } catch {
+      setAuthError('Sign out failed. Please try again before leaving this device.')
     }
-
-    setUser(null)
   }
 
-  const value = useMemo(
-    () => ({ user, users, signup, login, logout, resetPassword, socialLogin }),
-    [user, users],
+  return (
+    <AuthContext.Provider value={{
+      ...actions, logout, user: sessionUser(session), loading, authError,
+      clearAuthError: () => setAuthError(''),
+    }}>
+      {children}
+    </AuthContext.Provider>
   )
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

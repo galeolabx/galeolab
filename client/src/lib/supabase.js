@@ -1,10 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
+import { validateSupabaseConfig } from './supabaseConfig'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const hasSupabaseConfig = () => Boolean(supabaseUrl && supabaseAnonKey)
+export const hasSupabaseConfig = () => !validateSupabaseConfig(supabaseUrl, supabaseAnonKey)
 
 export const supabase = hasSupabaseConfig()
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { flowType: 'pkce', detectSessionInUrl: false, persistSession: true, autoRefreshToken: true },
+    })
   : null

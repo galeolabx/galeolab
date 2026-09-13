@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { hasSupabaseConfig } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import styles from '../styles/Auth.module.css'
 
 function ForgotPassword() {
-  const navigate = useNavigate()
   const { resetPassword } = useAuth()
   const [email, setEmail] = useState('')
-  const [newPassword, setNewPassword] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -19,16 +18,10 @@ function ForgotPassword() {
 
     try {
       setIsSubmitting(true)
-      const result = await resetPassword({ email, password: newPassword || 'temporary-password' })
-
-      if (result.sent) {
-        setMessage('A password reset email has been sent. Please check your inbox and follow the link to continue.')
-      } else {
-        setMessage('A local demo account password was updated. You can now sign in with the new password.')
-      }
+      await resetPassword({ email })
+      setMessage('If an account exists for this email, a reset link will arrive shortly. Open it in this browser to choose a new password.')
 
       setEmail('')
-      setNewPassword('')
     } catch (submitError) {
       setError(submitError.message || 'Could not reset your password.')
     } finally {
@@ -43,15 +36,16 @@ function ForgotPassword() {
           <div className={styles.infoPanel}>
             <span className="section-label">Account recovery</span>
             <h1 className={styles.title}>Reset your access</h1>
-            <p className={styles.subtitle}>Enter your email and set a new password to regain access to your workspace.</p>
+            <p className={styles.subtitle}>Request a verified email link to choose a new password.</p>
           </div>
 
           <div className={styles.formPanel}>
             <form className={styles.form} onSubmit={handleSubmit}>
               <h2>Forgot password</h2>
 
-              {error && <div className={styles.error}>{error}</div>}
-              {message && <div className={styles.success}>{message}</div>}
+              {!hasSupabaseConfig() && <div className={styles.error} role="alert">Account access is temporarily unavailable. Please try again later.</div>}
+              {error && <div className={styles.error} role="alert">{error}</div>}
+              {message && <div className={styles.success} role="status">{message}</div>}
 
               <label className={styles.field}>
                 <span>Email address</span>
@@ -64,19 +58,8 @@ function ForgotPassword() {
                 />
               </label>
 
-              <label className={styles.field}>
-                <span>New password</span>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(event) => setNewPassword(event.target.value)}
-                  placeholder="Create a new password"
-                  minLength={6}
-                />
-              </label>
-
-              <button type="submit" className={`${styles.primaryButton} btn-primary`} disabled={isSubmitting}>
-                {isSubmitting ? 'Updating...' : 'Reset password'}
+              <button type="submit" className={`${styles.primaryButton} btn-primary`} disabled={isSubmitting || !hasSupabaseConfig()}>
+                {isSubmitting ? 'Sending...' : 'Send reset link'}
               </button>
 
               <p className={styles.footerText}>

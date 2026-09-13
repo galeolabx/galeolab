@@ -14,20 +14,21 @@ const DEFAULT_FORM = {
 function Auth() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { signup, login, socialLogin, user } = useAuth()
+  const { signup, login, socialLogin, user, loading, authError, clearAuthError } = useAuth()
   const [mode, setMode] = useState(location.pathname === '/signup' ? 'signup' : 'login')
   const [form, setForm] = useState(DEFAULT_FORM)
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    if (user) {
+    if (!loading && user && !authError) {
       navigate('/dashboard', { replace: true })
       return
     }
 
     setMode(location.pathname === '/signup' ? 'signup' : 'login')
-  }, [location.pathname, navigate, user])
+  }, [location.pathname, navigate, user, loading, authError])
 
   const isSignup = mode === 'signup'
 
@@ -54,6 +55,8 @@ function Auth() {
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
+    setMessage('')
+    clearAuthError()
 
     if (isSignup && form.password !== form.confirmPassword) {
       setError('Passwords do not match.')
@@ -64,11 +67,16 @@ function Auth() {
       setIsSubmitting(true)
 
       if (isSignup) {
-        await signup({
+        const result = await signup({
           fullName: form.fullName,
           email: form.email,
           password: form.password,
         })
+        if (result.confirmationRequired) {
+          setForm(DEFAULT_FORM)
+          setMessage('Check your email. If confirmation is needed, follow the link in the same browser to finish creating your account. You can then sign in.')
+          return
+        }
       } else {
         await login({
           email: form.email,
@@ -91,7 +99,6 @@ function Auth() {
     try {
       setIsSubmitting(true)
       await socialLogin(provider)
-      navigate('/dashboard', { replace: true })
     } catch (submitError) {
       setError(submitError.message || 'Could not continue with that provider.')
     } finally {
@@ -135,8 +142,8 @@ function Auth() {
 
           <div className={styles.formPanel}>
             {!hasSupabaseConfig() && (
-              <div className={styles.success} style={{ marginBottom: '18px' }}>
-                Demo mode active: add your Supabase URL and anon key in .env to enable real authentication.
+              <div className={styles.error} role="alert" style={{ marginBottom: '18px' }}>
+                Account access is temporarily unavailable. Please try again later.
               </div>
             )}
 
@@ -166,7 +173,8 @@ function Auth() {
             <form className={styles.form} onSubmit={handleSubmit}>
               <h2>{title}</h2>
 
-              {error && <div className={styles.error}>{error}</div>}
+              {(error || authError) && <div className={styles.error} role="alert">{error || authError}</div>}
+              {message && <div className={styles.success} role="status">{message}</div>}
 
               {isSignup && (
                 <label className={styles.field}>
@@ -199,6 +207,8 @@ function Auth() {
                 <input
                   type="password"
                   name="password"
+                  autoComplete={isSignup ? 'new-password' : 'current-password'}
+                  minLength={isSignup ? 8 : undefined}
                   value={form.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
@@ -212,6 +222,8 @@ function Auth() {
                   <input
                     type="password"
                     name="confirmPassword"
+                    autoComplete="new-password"
+                    minLength={8}
                     value={form.confirmPassword}
                     onChange={handleChange}
                     placeholder="Re-enter your password"
@@ -222,15 +234,11 @@ function Auth() {
 
               {!isSignup && (
                 <div className={styles.metaRow}>
-                  <label className={styles.checkbox}>
-                    <input type="checkbox" />
-                    <span>Remember me</span>
-                  </label>
                   <Link to="/forgot-password">Forgot password?</Link>
                 </div>
               )}
 
-              <button type="submit" className={`${styles.primaryButton} btn-primary`} disabled={isSubmitting}>
+              <button type="submit" className={`${styles.primaryButton} btn-primary`} disabled={isSubmitting || loading || !hasSupabaseConfig()}>
                 {isSubmitting ? (isSignup ? 'Creating account...' : 'Signing in...') : submitLabel}
               </button>
 
@@ -243,7 +251,7 @@ function Auth() {
                   type="button"
                   className={styles.socialButton}
                   onClick={() => handleSocialLogin('google')}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || loading || !hasSupabaseConfig()}
                 >
                   Google
                 </button>
@@ -251,7 +259,7 @@ function Auth() {
                   type="button"
                   className={styles.socialButton}
                   onClick={() => handleSocialLogin('github')}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || loading || !hasSupabaseConfig()}
                 >
                   GitHub
                 </button>

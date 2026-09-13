@@ -39,7 +39,10 @@ jobs:
 
       - name: Build website
         working-directory: client
-        run: npm run build
+        run: |
+          node scripts/check-auth-config.mjs
+          npm test
+          npm run build
 
       - name: Create SPA fallback
         run: cp client/dist/index.html client/dist/404.html

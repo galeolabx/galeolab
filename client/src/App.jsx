@@ -5,6 +5,7 @@ import Home from './pages/Home/Home'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import ForgotPassword from './pages/ForgotPassword'
+import UpdatePassword from './pages/UpdatePassword'
 import NotFound from './pages/NotFound'
 import { useAuth } from './context/AuthContext'
 
@@ -24,7 +25,9 @@ const SECTION_ROUTES = [
 ]
 
 function ProtectedDashboard() {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
+
+  if (loading) return <p role="status" className="auth-loading">Restoring your session…</p>
 
   if (!user) {
     return <Navigate to="/login" replace />
@@ -42,6 +45,7 @@ function App() {
           <Route path="login" element={<Auth />} />
           <Route path="signup" element={<Auth />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="update-password" element={<UpdatePassword />} />
           <Route path="dashboard" element={<ProtectedDashboard />} />
 
           {SECTION_ROUTES.map((route) => (
