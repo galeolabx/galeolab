@@ -1,0 +1,33 @@
+name: Check GaleoLab
+
+on:
+  pull_request:
+  push:
+    branches:
+      - codex/galeolab-user-auth
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - name: Install locked dependencies
+        working-directory: client
+        run: npm ci
+      - name: Check auth callback behaviour
+        working-directory: client
+        run: node --test src/auth/auth-flow.test.js
+      - name: Build without auth configuration
+        working-directory: client
+        run: npm run build
+      - name: Check pinned auth SDK availability
+        run: |
+          node --input-type=module -e "const r = await fetch('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.102.0/+esm'); if (!r.ok) throw new Error('Auth SDK response: ' + r.status); const body = await r.text(); if (!body.includes('createClient')) throw new Error('Auth SDK export missing');"

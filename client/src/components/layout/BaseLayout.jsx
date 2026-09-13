@@ -5,12 +5,12 @@ import Footer from './Footer'
 import styles from '../../styles/BaseLayout.module.css'
 
 function BaseLayout() {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
 
   // Scroll to top on route change
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [pathname])
+    if (!hash) window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [pathname, hash])
 
   return (
     <div className={styles.layout}>

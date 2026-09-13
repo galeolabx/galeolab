@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import styles from '../../styles/ArchitectureHome.module.css'
 
 const metrics = [
@@ -181,14 +182,16 @@ function FeatureCard({ title, text, tags, number }) {
 }
 
 function Home() {
+  const { hash } = useLocation()
   const [formStatus, setFormStatus] = useState('')
 
   useEffect(() => {
-    if (window.location.hash) {
-      const id = window.location.hash.replace('#', '')
-      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 80)
-    }
-  }, [])
+    if (!hash) return
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [hash])
 
   const handleContact = (event) => {
     event.preventDefault()
