@@ -68,9 +68,14 @@
   --font-display: 'Inter', sans-serif;
   --font-body:    'Noto Sans', sans-serif;
 
-  --section-padding: 100px 0;
+  --page-gutter: 32px;
+  --navbar-height: 72px;
+  --hero-gap: 96px;
+  --section-space: 80px;
+  --footer-bottom: 48px;
+  --section-padding: var(--section-space) 0;
   --container-max:   1200px;
-  --container-pad:   0 24px;
+  --container-pad:   0 var(--page-gutter);
 
   --transition-fast: 0.2s ease;
   --transition-med:  0.35s ease;
@@ -200,6 +205,7 @@ a {
 }
 
 .container {
+  width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
   padding: var(--container-pad);
@@ -208,6 +214,7 @@ a {
 section {
   padding: var(--section-padding);
   position: relative;
+  scroll-margin-top: var(--navbar-height);
 }
 
 ::selection {
@@ -354,15 +361,21 @@ h1, h2, h3, h4, h5, h6 {
 
 /* RESPONSIVE SPACING */
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   :root {
-    --section-padding: 72px 0;
+    --page-gutter: 24px;
+    --hero-gap: 72px;
+    --section-space: 64px;
+    --footer-bottom: 32px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   :root {
-    --section-padding: 52px 0;
+    --page-gutter: 16px;
+    --hero-gap: 48px;
+    --section-space: 48px;
+    --footer-bottom: 24px;
   }
 }
 

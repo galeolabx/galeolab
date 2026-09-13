@@ -94,12 +94,14 @@ function Navbar() {
           className={`${styles.burger} ${menuOpen ? styles.open : ''}`}
           onClick={() => setMenuOpen(prev => !prev)}
           aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
         >
           <span /><span /><span />
         </button>
       </div>
 
-      <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileOpen : ''}`}>
+      <div id="mobile-navigation" inert={menuOpen ? undefined : ""} className={`${styles.mobileMenu} ${menuOpen ? styles.mobileOpen : ''}`}>
         {NAV_LINKS.map(link => (
           <a
             key={link.id}
@@ -110,16 +112,6 @@ function Navbar() {
             {link.label}
           </a>
         ))}
-        <div className={styles.mobileThemeRow}>
-          <span>Dark mode</span>
-          <button
-            className={`${styles.mobileThemeSwitch} ${theme === 'dark' ? styles.mobileThemeOn : ''}`}
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-          >
-            <span className={styles.mobileThemeKnob} />
-          </button>
-        </div>
         <a href="/#contact" className={styles.mobileCta}
           onClick={event => scrollToSection(event, 'contact')}>
           Request Demo

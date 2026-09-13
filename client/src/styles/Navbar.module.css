@@ -22,9 +22,9 @@
 
 .inner {
   max-width: 1200px;
-  min-height: 71px;
+  min-height: calc(var(--navbar-height) - 1px);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: var(--container-pad);
   display: flex;
   align-items: center;
   gap: 22px;
@@ -69,12 +69,12 @@
 }
 .navLink:hover {
   color: var(--color-text-primary);
-  background: rgba(37, 99, 235, 0.1);
+  background: var(--color-accent-glow);
 }
 
 .navLink.active {
   color: var(--color-accent-primary);
-  background: rgba(37, 99, 235, 0.12);
+  background: var(--color-accent-glow);
 }
 
 .themeToggle {
@@ -97,15 +97,14 @@
   transform: translateY(-1px);
 }
 
-/* Always accent-blue with white text — safe in both themes,
-   never relies on the flipping text-primary variable */
+/* Theme-aware foreground for accent buttons. */
 .hireCta {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   padding: 10px 22px;
   background: var(--gradient-blue);
-  color: #ffffff;
+  color: var(--color-button-text);
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
   font-size: 14px;
@@ -118,7 +117,7 @@
 
 .hireCta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+  background: var(--color-button-hover);
 }
 
 .burger {
@@ -155,13 +154,14 @@
   background: var(--color-mobile-menu-bg);
   border-top: 0 solid transparent;
   transition: max-height var(--transition-med), padding var(--transition-med);
-  padding: 0 24px;
+  padding: var(--container-pad);
 }
 
 .mobileMenu.mobileOpen {
   border-top: 1px solid var(--color-navbar-border);
-  max-height: 500px;
-  padding: 16px 24px 24px;
+  max-height: calc(100dvh - var(--navbar-height));
+  overflow-y: auto;
+  padding: 16px var(--page-gutter) 24px;
 }
 
 .mobileLink {
@@ -178,49 +178,15 @@
 .mobileLink:hover,
 .mobileLink.mobileActive {
   color: var(--color-accent-primary);
-  background: rgba(37, 99, 235, 0.06);
+  background: var(--color-accent-glow);
 }
-
-.mobileThemeRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  margin-top: 4px;
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-}
-
-.mobileThemeSwitch {
-  width: 40px;
-  height: 22px;
-  border-radius: 20px;
-  background: var(--color-border);
-  border: none;
-  position: relative;
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-.mobileThemeSwitch.mobileThemeOn { background: var(--color-accent-primary); }
-
-.mobileThemeKnob {
-  position: absolute;
-  top: 2px; left: 2px;
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: #fff;
-  transition: transform var(--transition-fast);
-}
-.mobileThemeSwitch.mobileThemeOn .mobileThemeKnob { transform: translateX(18px); }
 
 .mobileCta {
   display: block;
   margin-top: 12px;
   padding: 13px 28px;
   background: var(--gradient-blue);
-  color: #ffffff;
+  color: var(--color-button-text);
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
   font-weight: 600;
@@ -244,7 +210,7 @@
   to { width: 100%; }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .navLinks, .hireCta { display: none; }
   .themeToggle { margin-left: auto; }
   .burger { display: flex; margin-left: 12px; }
@@ -253,7 +219,7 @@
 
 @media (max-width: 460px) {
   .inner {
-    padding: 0 18px;
+    padding: var(--container-pad);
     gap: 14px;
   }
 

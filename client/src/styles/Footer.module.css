@@ -12,7 +12,7 @@
 .inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 72px 24px 50px;
+  padding: var(--section-space) var(--page-gutter);
   display: grid;
   grid-template-columns: 1.7fr repeat(6, minmax(0, 1fr));
   gap: 30px;
@@ -40,7 +40,7 @@
 
 .tagline {
   max-width: 300px;
-  color: rgba(255, 255, 255, 0.55);
+  color: #B8B8B8;
   font-size: 13px;
   font-weight: 300;
   line-height: 1.75;
@@ -64,7 +64,7 @@
 
 .link {
   display: block;
-  color: rgba(255, 255, 255, 0.5);
+  color: #B8B8B8;
   font-size: 13px;
   font-weight: 300;
   line-height: 1.45;
@@ -79,7 +79,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.56);
+  color: #B8B8B8;
   font-size: 13px;
   transition: color var(--transition-fast);
 }
@@ -101,7 +101,7 @@
 .socialInner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 18px 24px;
+  padding: 18px var(--page-gutter);
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -123,7 +123,7 @@
 }
 
 .socialInner a:hover {
-  color: #ffffff;
+  color: var(--color-button-text);
   background: var(--color-accent-primary);
   border-color: var(--color-accent-primary);
 }
@@ -135,7 +135,7 @@
 .bottomInner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px 24px;
+  padding: 20px var(--page-gutter) var(--footer-bottom);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -144,13 +144,13 @@
 }
 
 .copy {
-  color: rgba(255, 255, 255, 0.35);
+  color: #B8B8B8;
   font-size: 13px;
   font-weight: 300;
 }
 
 .tagStrip {
-  color: rgba(255, 255, 255, 0.28);
+  color: #B8B8B8;
   font-family: var(--font-display);
   font-size: 11px;
   font-weight: 600;

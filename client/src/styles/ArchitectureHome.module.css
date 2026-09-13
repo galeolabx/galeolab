@@ -4,22 +4,20 @@
 
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: auto;
   display: flex;
   align-items: center;
-  padding-top: 96px;
+  padding: calc(var(--navbar-height) + var(--hero-gap)) 0 var(--section-space);
   overflow: hidden;
-  background:
-    radial-gradient(circle at 80% 18%, rgba(0, 184, 217, 0.16), transparent 32%),
-    var(--gradient-hero);
+  background: var(--color-bg-primary);
 }
 
 .heroBg {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px);
+    linear-gradient(var(--color-accent-glow) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-accent-glow) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 88%);
   pointer-events: none;
@@ -31,7 +29,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  padding: 80px 0 110px;
+  padding: 0;
 }
 
 .eyebrow {
@@ -74,8 +72,8 @@
 .metricsBand {
   position: relative;
   z-index: 2;
-  margin-top: -64px;
-  padding-bottom: 72px;
+  margin-top: 0;
+  padding: var(--section-padding);
 }
 
 .metricGrid {
@@ -112,14 +110,12 @@
 }
 
 .section {
-  padding: 112px 0;
+  padding: var(--section-padding);
   border-top: 1px solid var(--color-border);
 }
 
 .altSection {
-  background:
-    linear-gradient(90deg, rgba(37, 99, 235, 0.045), transparent 36%),
-    var(--color-bg-secondary);
+  background: var(--color-bg-secondary);
 }
 
 .sectionHeader {
@@ -302,7 +298,7 @@
   align-items: center;
   padding: 0 10px;
   color: var(--color-text-primary);
-  background: rgba(37, 99, 235, 0.06);
+  background: var(--color-accent-glow);
   border: 1px solid var(--color-accent-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
@@ -351,7 +347,7 @@
   height: 34px;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--color-button-text);
   background: var(--color-accent-primary);
   border-radius: 999px;
   font-family: var(--font-display);
@@ -440,15 +436,13 @@
 
 .comparisonRow strong {
   color: var(--color-text-primary);
-  background: rgba(0, 184, 217, 0.06);
+  background: var(--color-accent-glow);
   font-family: var(--font-display);
   font-weight: 700;
 }
 
 .contactSection {
-  background:
-    radial-gradient(circle at 86% 16%, rgba(0, 184, 217, 0.16), transparent 28%),
-    var(--color-bg-secondary);
+  background: var(--color-bg-secondary);
 }
 
 .contactGrid {
@@ -560,15 +554,6 @@
     min-height: auto;
   }
 
-  .heroGrid {
-    padding: 72px 0;
-  }
-
-  .metricsBand {
-    margin-top: 0;
-    padding-bottom: 44px;
-  }
-
   .metricGrid,
   .cardGrid,
   .pricingGrid,
@@ -577,10 +562,6 @@
   .pillGrid,
   .integrationGrid {
     grid-template-columns: 1fr;
-  }
-
-  .section {
-    padding: 78px 0;
   }
 
   .card,

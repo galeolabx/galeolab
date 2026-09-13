@@ -234,13 +234,15 @@ function Home() {
       </section>
 
       <section className={styles.metricsBand} aria-label="Company metrics">
-        <div className={`${styles.metricGrid} container`}>
-          {metrics.map(metric => (
-            <div className={styles.metricCard} key={metric.label}>
-              <strong>{metric.value}</strong>
-              <span>{metric.label}</span>
-            </div>
-          ))}
+        <div className="container">
+          <div className={styles.metricGrid}>
+            {metrics.map(metric => (
+              <div className={styles.metricCard} key={metric.label}>
+                <strong>{metric.value}</strong>
+                <span>{metric.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
