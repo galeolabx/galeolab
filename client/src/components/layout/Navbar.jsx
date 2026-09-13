@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
+import { useAuth } from '../../context/AuthContext'
 import galeolabWordmark from '../../assets/images/galeolab-wordmark.png'
 import styles from '../../styles/Navbar.module.css'
 
@@ -19,6 +20,7 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const { theme, toggleTheme } = useTheme()
+  const { user, logout } = useAuth()
 
   const handleScroll = useCallback(() => {
     setScrolled(window.scrollY > 40)
@@ -82,13 +84,23 @@ function Navbar() {
           )}
         </button>
 
-        <a href="/#contact" className={styles.hireCta} onClick={event => scrollToSection(event, 'contact')}>
-          Request Demo
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
-        </a>
+        <div className={styles.actionGroup}>
+          {user ? (
+            <>
+              <Link to="/dashboard" className={styles.userBadge}>{user.fullName || user.email}</Link>
+              <button type="button" className={styles.logoutLink} onClick={logout}>Logout</button>
+            </>
+          ) : (
+            <Link to="/login" className={styles.loginLink}>Login</Link>
+          )}
+          <a href="/#contact" className={styles.hireCta} onClick={event => scrollToSection(event, 'contact')}>
+            Request Demo
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2">
+              <path d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </a>
+        </div>
 
         <button
           className={`${styles.burger} ${menuOpen ? styles.open : ''}`}
@@ -112,6 +124,14 @@ function Navbar() {
             {link.label}
           </a>
         ))}
+        {user ? (
+          <>
+            <Link to="/dashboard" className={styles.mobileUser}>{user.fullName || user.email}</Link>
+            <button type="button" className={styles.mobileLogout} onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <Link to="/login" className={styles.mobileLogin}>Login</Link>
+        )}
         <a href="/#contact" className={styles.mobileCta}
           onClick={event => scrollToSection(event, 'contact')}>
           Request Demo
