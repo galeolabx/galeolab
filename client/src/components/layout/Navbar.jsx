@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import galeolabWordmark from '../../assets/images/galeolab-wordmark.png'
 import styles from '../../styles/Navbar.module.css'
@@ -18,6 +19,8 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { session } = useAuth()
   const { theme, toggleTheme } = useTheme()
 
   const handleScroll = useCallback(() => {
@@ -35,7 +38,7 @@ function Navbar() {
     event.preventDefault()
     setMenuOpen(false)
     if (location.pathname !== '/') {
-      window.location.href = `/#${id}`
+      navigate({ pathname: '/', hash: '#' + id })
       return
     }
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -82,6 +85,10 @@ function Navbar() {
           )}
         </button>
 
+        <Link to={session ? "/account" : "/login"} className={styles.accountLink}>
+          {session ? "Account" : "Log in"}
+        </Link>
+
         <a href="/#contact" className={styles.hireCta} onClick={event => scrollToSection(event, 'contact')}>
           Request Demo
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -112,6 +119,10 @@ function Navbar() {
             {link.label}
           </a>
         ))}
+        <Link to={session ? "/account" : "/login"} className={styles.mobileLink}>
+          {session ? "Your account" : "Log in"}
+        </Link>
+        {!session && <Link to="/signup" className={styles.mobileLink}>Create an account</Link>}
         <a href="/#contact" className={styles.mobileCta}
           onClick={event => scrollToSection(event, 'contact')}>
           Request Demo

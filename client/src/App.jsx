@@ -3,6 +3,7 @@ import { HashRouter, Navigate, Routes, Route } from 'react-router-dom'
 import BaseLayout from './components/layout/BaseLayout'
 import Home from './pages/Home/Home'
 import NotFound from './pages/NotFound'
+import { LoginPage, SignupPage, VerifyEmailPage, ForgotPasswordPage, ResetPasswordPage, AccountPage } from './pages/Auth/AuthPages'
 
 const SECTION_ROUTES = [
   { path: 'platform', section: 'platform' },
@@ -25,6 +26,12 @@ function App() {
       <Routes>
         <Route path="/" element={<BaseLayout />}>
           <Route index element={<Home />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
+          <Route path="verify-email" element={<VerifyEmailPage />} />
+          <Route path="forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="reset-password" element={<ResetPasswordPage />} />
+          <Route path="account" element={<AccountPage />} />
 
           {SECTION_ROUTES.map((route) => (
             <Route
