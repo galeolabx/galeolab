@@ -25,6 +25,8 @@
 }
 
 .logo {
+  align-self: flex-start;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
 }
@@ -33,9 +35,10 @@
   display: block;
   width: 168px;
   height: 33px;
-  object-fit: contain;
-  object-position: left center;
-  filter: invert(1) brightness(1.16) contrast(1.05);
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.21);
+  filter: brightness(0) invert(1);
 }
 
 .tagline {
