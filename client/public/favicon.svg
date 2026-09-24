@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 520" role="img" aria-labelledby="title">
+  <title>GaleoLab</title>
+  <defs>
+    <linearGradient id="left" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06264e" />
+      <stop offset="1" stop-color="#00132f" />
+    </linearGradient>
+    <linearGradient id="right" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08b4aa" />
+      <stop offset="1" stop-color="#00a58e" />
+    </linearGradient>
+    <linearGradient id="center" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06244a" />
+      <stop offset="1" stop-color="#001635" />
+    </linearGradient>
+  </defs>
+  <path fill="url(#left)" d="M21 445 229 21v116l-99 76v110L21 519Z" />
+  <path fill="url(#right)" d="M244 21 449 445l-108-60V277l-97-63Z" />
+  <path fill="url(#center)" d="m130 383 104-72v209l-104-65Z" />
+  <path fill="#00132f" d="m145 413 89-61 78 45-78 45Z" />
+  <path fill="#00132f" d="m234 311 53 39v111l-53-30Z" />
+</svg>
