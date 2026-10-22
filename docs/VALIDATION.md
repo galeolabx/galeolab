@@ -15,3 +15,5 @@
 Real Firebase project/domain configuration, real mailbox delivery, deployed indexes/rules, live legacy user counts, data migration, production deployment and live website behavior remain unverified. No such deployment was performed. Emulator Auth policy is not proof of production password-policy configuration.
 
 The new verification workflow runs lint, unit tests, build and Auth/Firestore emulator tests for pull requests. There were no existing baseline test scripts to preserve.
+
+- Additional browser checks passed: verified administrator claims, total count, 25-row pagination, service filtering, exact-email search, reset email request, custom password-reset handler and redirect to Login. The service filter has an explicit accessible label.

@@ -116,7 +116,7 @@ export default function Admin() {
         </label>
         <label>
           Engineering service
-          <select
+          <select aria-label="Engineering service"
             value={service}
             onChange={(e) => {
               setService(e.target.value);
