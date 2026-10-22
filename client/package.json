@@ -6,16 +6,30 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test scripts/registration.test.mjs",
+    "lint": "eslint src scripts",
+    "test:rules": "firebase emulators:exec --config ../firebase.json --project demo-galeolab --only auth,firestore \"node --test scripts/rules.test.mjs scripts/auth.test.mjs\""
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.45.4",
+    "firebase": "13.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.0"
+    "react-router-dom": "7.18.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.1.4"
+    "@eslint/js": "9.39.5",
+    "@firebase/rules-unit-testing": "6.0.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "eslint": "9.39.5",
+    "eslint-plugin-react": "7.37.5",
+    "firebase-admin": "14.5.0",
+    "firebase-tools": "15.34.0",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "vite": "8.3.5"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "1.14.6"
   }
 }
