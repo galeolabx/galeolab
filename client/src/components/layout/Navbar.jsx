@@ -21,6 +21,12 @@ function Navbar() {
   const location = useLocation()
   const { theme, toggleTheme } = useTheme()
   const { user, logout } = useAuth()
+  const [logoutError, setLogoutError] = useState('')
+  const handleLogout = async () => {
+    setLogoutError('')
+    try { await logout() }
+    catch { setLogoutError('Sign out failed. Please retry before leaving this device.') }
+  }
 
   const handleScroll = useCallback(() => {
     setScrolled(window.scrollY > 40)
@@ -45,6 +51,7 @@ function Navbar() {
 
   return (
     <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
+      {logoutError && <p role="alert">{logoutError}</p>}
       <div className={styles.inner}>
         <Link to="/" className={styles.logo} aria-label="GaleoLab home">
           <img className={styles.logoImage} src={galeolabWordmark} alt="GaleoLab" />
@@ -88,7 +95,7 @@ function Navbar() {
           {user ? (
             <>
               <Link to="/dashboard" className={styles.userBadge}>{user.fullName || user.email}</Link>
-              <button type="button" className={styles.logoutLink} onClick={logout}>Logout</button>
+              <button type="button" className={styles.logoutLink} onClick={handleLogout}>Logout</button>
             </>
           ) : (
             <Link to="/login" className={styles.loginLink}>Login</Link>
@@ -127,7 +134,7 @@ function Navbar() {
         {user ? (
           <>
             <Link to="/dashboard" className={styles.mobileUser}>{user.fullName || user.email}</Link>
-            <button type="button" className={styles.mobileLogout} onClick={logout}>Logout</button>
+            <button type="button" className={styles.mobileLogout} onClick={handleLogout}>Logout</button>
           </>
         ) : (
           <Link to="/login" className={styles.mobileLogin}>Login</Link>

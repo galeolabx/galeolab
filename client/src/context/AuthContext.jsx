@@ -1,72 +1,48 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
-import { createAuthActions, sessionUser } from '../lib/authActions'
-
-const AuthContext = createContext(null)
-
-export function AuthProvider({ children, callbackError = '' }) {
-  const [session, setSession] = useState(null)
-  const [loading, setLoading] = useState(Boolean(supabase))
-  const [authError, setAuthError] = useState(callbackError)
-
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { onIdTokenChanged, signOut } from "firebase/auth";
+import { auth } from "../lib/firebase";
+const Context = createContext(null);
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(Boolean(auth));
+  const [admin, setAdmin] = useState(false);
   useEffect(() => {
-    // Delete the retired demo database, including any readable passwords.
     for (const storage of [localStorage, sessionStorage]) {
-      storage.removeItem('galeolab-auth-users')
-      storage.removeItem('galeolab-auth-session')
+      storage.removeItem("galeolab-auth-users");
+      storage.removeItem("galeolab-auth-session");
+      for (const key of Object.keys(storage))
+        if (/^sb-.*-auth-token/.test(key)) storage.removeItem(key);
     }
-    if (!supabase) return undefined
-
-    let active = true
-    let eventVersion = 0
-    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      eventVersion += 1
-      if (active) {
-        setSession(nextSession)
-        setLoading(false)
+    if (!auth) return;
+    let generation = 0;
+    const unsubscribe = onIdTokenChanged(auth, async (next) => {
+      const current = ++generation;
+      setLoading(true);
+      try {
+        const token = next ? await next.getIdTokenResult() : null;
+        if (generation !== current) return;
+        setUser(next);
+        setAdmin(next?.emailVerified === true && token?.claims.admin === true);
+      } catch {
+        if (generation === current) {
+          setUser(null);
+          setAdmin(false);
+        }
+      } finally {
+        if (generation === current) setLoading(false);
       }
-    })
-    const version = eventVersion
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (!active || version !== eventVersion) return
-      setSession(error ? null : data.session)
-      if (error) setAuthError('Your session could not be restored. Please sign in again.')
-      setLoading(false)
-    }).catch(() => {
-      if (!active || version !== eventVersion) return
-      setSession(null)
-      setAuthError('Your session could not be restored. Please sign in again.')
-      setLoading(false)
-    })
+    });
     return () => {
-      active = false
-      data.subscription.unsubscribe()
-    }
-  }, [])
-
-  const actions = createAuthActions(supabase, window.location.origin)
-  const logout = async () => {
-    try {
-      await actions.logout()
-      setSession(null)
-      setAuthError('')
-    } catch {
-      setAuthError('Sign out failed. Please try again before leaving this device.')
-    }
-  }
-
+      generation++;
+      unsubscribe();
+    };
+  }, []);
   return (
-    <AuthContext.Provider value={{
-      ...actions, logout, user: sessionUser(session), loading, authError,
-      clearAuthError: () => setAuthError(''),
-    }}>
+    <Context.Provider
+      value={{ user, loading, admin, logout: () => signOut(auth) }}
+    >
       {children}
-    </AuthContext.Provider>
-  )
+    </Context.Provider>
+  );
 }
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth must be used within AuthProvider')
-  return context
-}
+export const useAuth = () => useContext(Context);
