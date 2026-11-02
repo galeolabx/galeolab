@@ -26,6 +26,15 @@
   color: var(--color-text-light);
 }
 
+.signupLogo {
+  display: block;
+  width: clamp(160px, 18vw, 220px);
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 28px;
+  border-radius: 18px;
+}
+
 .title {
   font-size: clamp(2.2rem, 3vw, 4rem);
   margin: 10px 0 18px;

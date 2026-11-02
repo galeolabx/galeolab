@@ -35,6 +35,7 @@ import {
 } from "../lib/registration";
 import { saveProfile } from "../lib/profiles";
 import styles from "../styles/Auth.module.css";
+import signupLogo from "../assets/images/galeolab-signup-logo.png";
 import "./Portal.css";
 
 export function PortalShell({ title, children }) {
@@ -42,6 +43,15 @@ export function PortalShell({ title, children }) {
     <section className={styles.page}>
       <div className={styles.shell}>
         <aside className={styles.infoPanel}>
+          {title === "Join GaleoLab" && (
+            <img
+              className={styles.signupLogo}
+              src={signupLogo}
+              alt="GaleoLab emblem and wordmark"
+              width="1254"
+              height="1254"
+            />
+          )}
           <p>GALEOLAB · EARLY ACCESS</p>
           <h1 className={styles.title}>{title}</h1>
           <p className={styles.subtitle}>
